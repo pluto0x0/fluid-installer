@@ -76,6 +76,11 @@ export const flashDevice = async (
         await new Promise((r) => setTimeout(r, 50));
         await transport.disconnect();
         await new Promise((r) => setTimeout(r, 1000));
+
+        // 确保 DTR 和 RTS 都被显式释放，兼容 CH343P
+        await transport.setDTR(false);  // IO0 = High
+        await transport.setRTS(false);  // EN  = High
+        await new Promise((r) => setTimeout(r, 100));
     }
     return Promise.resolve();
 };
